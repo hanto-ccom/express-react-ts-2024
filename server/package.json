@@ -2,9 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "start": "ts-node src/server.ts",
+    "dev": "nodemon -e ts --exec \"ts-node src/server.ts\"",
     "build": "tsc",
     "start:prod": "node dist/server.js"
   },
