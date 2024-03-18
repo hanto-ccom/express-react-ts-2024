@@ -15,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: ${(props) => props.theme.typography.fontFamily};
     font-size: ${(props) => props.theme.typography.fontSize};
-    background-color: ${(props) => props.theme.colors.background};
+    background-color: ${(props) => props.theme.palette.pureWhite};
     color: ${(props) => props.theme.colors.text};
     transition: background-color 0.3s ease, color 0.3s ease;
   }

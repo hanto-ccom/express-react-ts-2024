@@ -12,6 +12,7 @@ const palette = {
 }
 
 const defaultTheme = {
+    palette: { ...palette },
     colors: {
         primary: palette.blueTone,
         primaryHover: palette.deepPurple,
@@ -75,8 +76,8 @@ const defaultTheme = {
         large: '16px',
     },
     shadows: {
-        small: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        medium: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        small: '0 1px 3px rgba(0, 0, 0, 0.2)',
+        medium: '0 4px 6px rgba(0, 0, 0, 0.2)',
         large: '0 10px 20px rgba(0, 0, 0, 0.2)',
     },
 };

@@ -8,7 +8,7 @@ export const getWeatherForLatLong = async (req: Request, res: Response): Promise
     const { latitude, longitude } = req.params;
 
     try {
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.OPEN_WEATHER_API_KEY}`;
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPEN_WEATHER_API_KEY}`;
         const response = await axios.get(apiUrl);
         const data = response.data;
 
