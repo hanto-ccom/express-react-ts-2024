@@ -1,10 +1,22 @@
 import dotenv from 'dotenv';
 import express, {
+    ErrorRequestHandler,
+    NextFunction,
     Request,
     Response,
 } from 'express';
 
+import weatherRouter from './routes/WeatherRoutes';
+
 dotenv.config();
+
+//error handler
+const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+    res.status(err.status || 500).json({
+        message: err.message,
+        errors: err.errors,
+    });
+};
 
 // Create an instance of express to serve our end points
 const app = express();
@@ -16,8 +28,12 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 // A simple route that sends back a hello message
-app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'Hello from Express and TypeScript!' });
+app.use('/weather', weatherRouter)
+
+app.use(errorHandler);
+
+app.get('*', (req: Request, res: Response) => {
+    res.status(404).send('404 Not Found');
 });
 
 // Listen on the specified port
