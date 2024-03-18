@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, {
     ErrorRequestHandler,
@@ -20,6 +21,7 @@ const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response
 
 // Create an instance of express to serve our end points
 const app = express();
+app.use(cors({ origin: "http://localhost:5173" }))
 
 // Define the port we're going to listen for
 const PORT = process.env.PORT || 3001;
