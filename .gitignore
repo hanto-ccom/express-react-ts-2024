@@ -1,0 +1,31 @@
+# Node modules for both frontend and backend
+node_modules/
+
+# Environment configuration files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+/dist
+/build
+/out
+
+# Cache files (e.g., TypeScript, babel)
+*.tsbuildinfo
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
