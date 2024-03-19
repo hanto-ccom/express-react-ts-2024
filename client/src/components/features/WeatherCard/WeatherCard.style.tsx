@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 const WeatherCard = styled.div`
+  margin: 0 auto;
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -19,10 +21,10 @@ const WeatherCard = styled.div`
   &::after {
     content: "";
     position: absolute;
-    border-radius: 8px;
+
     top: 50%;
 
-    width: 400px;
+    width: 300px;
     height: 10px;
 
     background-color: orange;

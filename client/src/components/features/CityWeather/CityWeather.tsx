@@ -1,6 +1,8 @@
 import { useState } from "react";
 
+import Button from "../../atoms/Button/Button";
 import Input from "../../atoms/Input/Input";
+import Styled from "./CityWeather.style";
 
 type CityWeatherProps = React.DetailedHTMLProps<
   React.AllHTMLAttributes<HTMLDivElement>,
@@ -23,18 +25,18 @@ const CityWeather: React.FC<CityWeatherProps> = ({ onCitySubmit, ...rest }) => {
   };
 
   return (
-    <div {...rest}>
+    <Styled.CityWeatherDiv {...rest}>
       <form onSubmit={handleOnSubmit}>
-        <Input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.currentTarget.value)}
-        />
-        <button style={{ padding: "16px" }} type="submit">
-          Find!
-        </button>
+        <div className="form-content-wrapper">
+          <Input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.currentTarget.value)}
+          />
+          <Button type="submit">Find!</Button>
+        </div>
       </form>
-    </div>
+    </Styled.CityWeatherDiv>
   );
 };
 

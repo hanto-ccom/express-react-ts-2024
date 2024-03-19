@@ -76,9 +76,9 @@ const defaultTheme = {
         large: '16px',
     },
     shadows: {
-        small: '0 1px 3px rgba(0, 0, 0, 0.2)',
+        small: '0 1px 3px rgba(0, 0, 0, 0.1)',
         medium: '0 4px 6px rgba(0, 0, 0, 0.2)',
-        large: '0 10px 20px rgba(0, 0, 0, 0.2)',
+        large: '0 10px 20px rgba(0, 0, 0, 0.3)',
     },
 };
 export default defaultTheme;
