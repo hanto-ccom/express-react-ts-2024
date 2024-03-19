@@ -11,6 +11,9 @@ const WeatherCard = styled.div`
   width: 300px;
   height: 300px;
   border-radius: 50%;
+  border: 2px;
+  border-style: solid;
+  border-color: orange;
   box-shadow: ${(props) => props.theme.shadows.large};
 
   &::after {
@@ -22,7 +25,7 @@ const WeatherCard = styled.div`
     width: 400px;
     height: 10px;
 
-    background-color: green;
+    background-color: orange;
   }
 `;
 
