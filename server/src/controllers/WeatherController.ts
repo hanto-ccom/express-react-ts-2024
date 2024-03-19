@@ -38,7 +38,6 @@ const getWeatherLatLong = async (latitude: string, longitude: string): Promise<a
     try {
         const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPEN_WEATHER_API_KEY}`;
         const response = await axios.get(apiUrl);
-        console.log("data: ", response.data)
         const data = response.data;
         return data;
     } catch (error: any) {
