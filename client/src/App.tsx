@@ -16,7 +16,6 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onFomSubmit = async (city: string) => {
-    console.log("City: ", city);
     setIsLoading(true);
     try {
       const cityData = await WeatherService.getWeatherForCity(city);
