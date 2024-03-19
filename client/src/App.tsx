@@ -20,7 +20,7 @@ function App() {
     setIsLoading(true);
     try {
       const cityData = await WeatherService.getWeatherForCity(city);
-      cityData && setWeatherData(cityData);
+      cityData ? setWeatherData(cityData) : setWeatherData(undefined);
     } catch (error) {
       console.error(error);
     } finally {
