@@ -6,11 +6,11 @@ const Button = styled.button`
   transition: border-color 300ms ease-in-out;
   background: orange;
   color: white;
-  border-color: black;
+  border-color: orange;
 
   &:hover,
   &:focus {
-    border-color: orange;
+    border-color: light-gray;
   }
 `;
 

@@ -33,7 +33,7 @@ const CityWeather: React.FC<CityWeatherProps> = ({ onCitySubmit, ...rest }) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.currentTarget.value)}
           />
-          <Button type="submit">Find!</Button>
+          <Button type="submit">Find</Button>
         </div>
       </form>
     </Styled.CityWeatherDiv>

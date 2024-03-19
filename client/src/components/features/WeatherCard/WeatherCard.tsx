@@ -28,7 +28,7 @@ const WeatherCard: React.FC<{
         </p>
       )}
 
-      {!isLoading && !weatherData && <p>No data for city</p>}
+      {!isLoading && !weatherData && <p>Search a city</p>}
     </Styled.WeatherCard>
   );
 };
