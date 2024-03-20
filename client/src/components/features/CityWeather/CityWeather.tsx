@@ -15,13 +15,10 @@ const CityWeather: React.FC<CityWeatherProps> = ({ onCitySubmit, ...rest }) => {
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //no try-catch needed since any error is caught and handled before this
     e.preventDefault();
-    try {
-      await onCitySubmit(inputValue);
-      setInputValue("");
-    } catch (error) {
-      console.error("Error in handleSubmit: ", error);
-    }
+    await onCitySubmit(inputValue);
+    setInputValue("");
   };
 
   return (

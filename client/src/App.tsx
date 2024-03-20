@@ -37,7 +37,9 @@ function App() {
       <CityWeather onCitySubmit={onFomSubmit} />
       <br />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />
-      <p style={{ color: "gray", minHeight: "25px" }}>{error && error}</p>
+      <p style={{ color: "gray", minHeight: "25px", marginTop: "25px" }}>
+        {error && error}
+      </p>
     </ThemeProvider>
   );
 }

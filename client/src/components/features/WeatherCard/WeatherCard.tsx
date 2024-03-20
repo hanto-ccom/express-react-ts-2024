@@ -10,7 +10,7 @@ const WeatherCard: React.FC<{
       {isLoading && <p>Loading data...</p>}
       {!isLoading &&
         weatherData?.weather.map((w, index) => (
-          <Styled.WeatherCardCondition>
+          <Styled.WeatherCardCondition key={index}>
             <img
               key={`${index}-${w.icon}`}
               src={`https://openweathermap.org/img/wn/${w.icon}@2x.png`}
