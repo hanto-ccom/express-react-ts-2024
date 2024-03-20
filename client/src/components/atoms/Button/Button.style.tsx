@@ -10,7 +10,7 @@ const Button = styled.button`
 
   &:hover,
   &:focus {
-    border-color: light-gray;
+    border-color: gray;
   }
 `;
 

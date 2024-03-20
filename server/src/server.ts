@@ -1,5 +1,4 @@
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express, {
     ErrorRequestHandler,
     NextFunction,
@@ -8,8 +7,6 @@ import express, {
 } from 'express';
 
 import weatherRouter from './routes/WeatherRoutes';
-
-dotenv.config();
 
 //error handler
 const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {

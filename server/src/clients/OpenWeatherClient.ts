@@ -1,4 +1,10 @@
-import axios from 'axios';
+import config from '../config/config';
+import createClient from './axiosClient';
+
+/**
+ * request client using axiosClient
+ */
+const openWeatherRequestClient = createClient({ baseURL: config.openWeatherMap.openWeatherBaseUrl });
 
 /**
  * 
@@ -7,24 +13,31 @@ import axios from 'axios';
  */
 const getLatLongForCity = async (city: string): Promise<{ lat: number, lon: number } | undefined> => {
     try {
-        const apiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${process.env.OPEN_WEATHER_API_KEY}`;
-        const response = await axios.get(apiUrl);
-        const data = response.data;
-        return { lat: data[0].lat, lon: data[0].lon };
+        const response = await openWeatherRequestClient.get("/geo/1.0/direct", { params: { q: city, limit: 5, appid: config.openWeatherMap.openWeatherApiKey } })
+        const data = response.data[0]
+        if (data) {
+            return { lat: data.lat, lon: data.lon };
+        }
+        return undefined
     } catch (error: any) {
-        console.error('Error fetching lat long for city:', error);
+        console.error(`Error fetching lat/long for city ${city}:`, error.message);
         return undefined;
     }
 }
 
+/**
+ * 
+ * @param latitude 
+ * @param longitude 
+ * @returns weather data for requested lat and long
+ */
 const getWeatherLatLong = async (latitude: number, longitude: number): Promise<any> => {
     try {
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPEN_WEATHER_API_KEY}`;
-        const response = await axios.get(apiUrl);
+        const response = await openWeatherRequestClient.get("/data/2.5/weather", { params: { lat: latitude, lon: longitude, units: "metric", appid: config.openWeatherMap.openWeatherApiKey } })
         const data = response.data;
         return data;
     } catch (error: any) {
-        console.error('Error fetching lat long for city:', error);
+        console.error(`Error fetching weather data for lat ${latitude}, long ${longitude}:`, error.message);
         return undefined;
     }
 }
