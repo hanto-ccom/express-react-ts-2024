@@ -7,6 +7,7 @@ import { ThemeProvider } from "styled-components";
 import CityWeather from "./components/features/CityWeather/CityWeather";
 import WeatherCard from "./components/features/WeatherCard/WeatherCard";
 import WeatherService from "./services/WeatherService.service";
+import { handleWeatherErrors } from "./services/WeatherServiceErrors";
 import defaultTheme from "./styles/themes/defaultTheme";
 import GlobalStyle from "./styles/themes/GlobalStyle";
 import { OpenWeatherMapReport } from "./types/WeatherDataTypes";
@@ -14,14 +15,17 @@ import { OpenWeatherMapReport } from "./types/WeatherDataTypes";
 function App() {
   const [weatherData, setWeatherData] = useState<OpenWeatherMapReport>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
 
   const onFomSubmit = async (city: string) => {
     setIsLoading(true);
+    setError(undefined);
     try {
       const cityData = await WeatherService.getWeatherForCity(city);
-      cityData ? setWeatherData(cityData) : setWeatherData(undefined);
+      setWeatherData(cityData);
     } catch (error) {
-      console.error(error);
+      setWeatherData(undefined);
+      handleWeatherErrors(error, setError);
     } finally {
       setIsLoading(false);
     }
@@ -33,6 +37,7 @@ function App() {
       <CityWeather onCitySubmit={onFomSubmit} />
       <br />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />
+      {error && <p style={{ color: "gray" }}>{error}</p>}
     </ThemeProvider>
   );
 }

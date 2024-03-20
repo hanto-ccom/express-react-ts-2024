@@ -3,57 +3,63 @@ import axios, { AxiosInstance } from 'axios';
 interface CreateAxiosClientOptions {
     baseURL?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    defaultParams?: any;
+    defaultParams?: Record<string, any>;
     authToken?: string; // OAuth token
     axiosInstance?: AxiosInstance; // Optional Axios instance
 }
 
-/**
- * Creates and configures an Axios instance.
- * @param baseURL Optional base URL for the Axios instance.
- * @returns Configured Axios instance.
- */
-
-export const createAxiosClient = ({ baseURL = '', defaultParams = {}, authToken = '', axiosInstance }: CreateAxiosClientOptions): AxiosInstance => {
+const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", axiosInstance }: CreateAxiosClientOptions): AxiosInstance => {
+    //enables passing in a mocked instance for testing
     const instance = axiosInstance || axios.create({
-        baseURL: baseURL || '', // Use the provided base URL or default to an empty string
+        baseURL,
         params: defaultParams,
         headers: {
             'Content-Type': 'application/json',
-            // Automatically add the Authorization header if an authToken is provided
             ...(authToken && { Authorization: `Bearer ${authToken}` }),
-            // Add more default headers if needed
-        },
-        // You can add more default settings here
+            //add more headers if needed
+        }
     });
 
-    // Example of adding an interceptor for requests
+    //Interceptors
+    // - Request
     instance.interceptors.request.use((config) => {
-        // Perform actions before request is sent, e.g., adding authentication tokens
-        // Example: Attach or modify the Authorization header if needed
-        // This could be used for scenarios where the authToken might be refreshed outside of this setup
+        //perform actions before request is sent
+        //i.e refresh authToken on the header
         if (authToken) {
-            config.headers.Authorization = `Bearer ${authToken}`;
+            config.headers.Authorization = `Bearer ${authToken}`
         }
         return config;
-    });
+    })
 
-    // Example of adding an interceptor for responses
+    // - Response
     instance.interceptors.response.use(
-        (response) => {
-            // Any status code that lie within the range of 2xx cause this function to trigger
-            return response;
-        },
+        (response) => response, //2xx - all good
         (error) => {
-            // Any status codes that falls outside the range of 2xx cause this function to trigger
-            //Example 404:
-            if (error.response && error.response.status === 404) {
-                console.error(`Request error status 404 `, error);
+            if (error.response) {
+                switch (error.response.status) {
+                    case 401:
+                        console.error("Unauthorized access - 401", error);
+                        // Handle token refresh, user redirection, or emit an event here
+                        break;
+                    case 404:
+                        console.error("Not Found - 404", error);
+                        // Handle 404 specific actions
+                        break;
+                    // Add more cases as needed
+                    default:
+                        console.error(`Error: ${error.response.status}`, error);
+                }
+            } else {
+                // Handle errors not directly related to the HTTP response (network errors, etc.)
+                console.error("An error occurred", error);
             }
             return Promise.reject(error);
         }
     );
 
-    return instance;
-};
 
+
+    return instance;
+}
+
+export default createAxiosClient;
