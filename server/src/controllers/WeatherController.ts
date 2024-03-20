@@ -4,28 +4,17 @@ import {
     Response,
 } from 'express';
 
-import OpenWeatherClient from '../clients/OpenWeatherClient';
-import { HttpError } from '../middleware/errorHandler';
-
-interface LatLongData {
-    lat: number;
-    lon: number;
-}
+import WeatherService from '../services/weatherService.service';
 
 export const getWeatherForCity = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { city } = req.params;
 
     try {
-        const latLongData: LatLongData | undefined = await OpenWeatherClient.getLatLongForCity(city);
-
-        if (!latLongData) {
-            throw new HttpError('Location data not found for the specified city', 404);
-        }
-
-        const weatherDataResponse = await OpenWeatherClient.getWeatherLatLong(latLongData.lat, latLongData.lon);
-        weatherDataResponse;
-        res.status(200).json(weatherDataResponse);
+        const weatherData = await WeatherService.getWeatherForCity(city)
+        res.status(200).json(weatherData);
     } catch (error: any) {
+        //thrown errors from clients and services are caught here and passed to our errorHandling middleware
+        //where it gets sent to the user
         next(error); // Pass the error to the next error handling middleware
     }
 }
