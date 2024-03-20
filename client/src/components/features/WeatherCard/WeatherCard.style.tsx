@@ -17,6 +17,18 @@ const WeatherCard = styled.div`
   border-style: solid;
   border-color: orange;
   box-shadow: ${(props) => props.theme.shadows.large};
+
+  &::after {
+    content: "";
+    position: absolute;
+
+    top: 50%;
+
+    width: 150px;
+    height: 5px;
+
+    background-color: green;
+  }
 `;
 
 const WeatherCardCondition = styled.div`
