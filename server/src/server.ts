@@ -1,20 +1,11 @@
 import cors from 'cors';
 import express, {
-    ErrorRequestHandler,
-    NextFunction,
     Request,
     Response,
 } from 'express';
 
+import { errorHandler } from './middleware/errorHandler';
 import weatherRouter from './routes/WeatherRoutes';
-
-//error handler
-const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    res.status(err.status || 500).json({
-        message: err.message,
-        errors: err.errors,
-    });
-};
 
 // Create an instance of express to serve our end points
 const app = express();
@@ -29,11 +20,11 @@ app.use(express.json());
 // A simple route that sends back a hello message
 app.use('/weather', weatherRouter)
 
-app.use(errorHandler);
-
 app.get('*', (req: Request, res: Response) => {
     res.status(404).send('404 Not Found');
 });
+
+app.use(errorHandler)
 
 // Listen on the specified port
 app.listen(PORT, () => {

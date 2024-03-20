@@ -1,27 +1,31 @@
 import {
+    NextFunction,
     Request,
     Response,
 } from 'express';
 
 import OpenWeatherClient from '../clients/OpenWeatherClient';
+import { HttpError } from '../middleware/errorHandler';
 
-export const getWeatherForCity = async (req: Request, res: Response): Promise<void> => {
+interface LatLongData {
+    lat: number;
+    lon: number;
+}
+
+export const getWeatherForCity = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { city } = req.params;
 
     try {
-        const latLongData = await OpenWeatherClient.getLatLongForCity(city);
+        const latLongData: LatLongData | undefined = await OpenWeatherClient.getLatLongForCity(city);
 
-        if (!latLongData || typeof latLongData.lat !== 'number' || typeof latLongData.lon !== 'number') {
-            throw new Error('Invalid latitude or longitude data');
+        if (!latLongData) {
+            throw new HttpError('Location data not found for the specified city', 404);
         }
 
         const weatherDataResponse = await OpenWeatherClient.getWeatherLatLong(latLongData.lat, latLongData.lon);
-        const data = weatherDataResponse;
-        res.status(200).json(data);
+        weatherDataResponse;
+        res.status(200).json(weatherDataResponse);
     } catch (error: any) {
-        console.error('Error fetching weather data:', error);
-        const status = error.response ? error.response.status : 500;
-        const message = error.response ? error.response.data.message : 'Error fetching weather data';
-        res.status(status).json({ message });
+        next(error); // Pass the error to the next error handling middleware
     }
 }
