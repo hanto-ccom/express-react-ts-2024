@@ -1,11 +1,7 @@
-import {
-    AxiosError,
-    AxiosInstance,
-} from 'axios';
+import { AxiosError } from 'axios';
 
-import createAxiosClient from '../clients/axiosClient';
-import WeatherClient from '../clients/WeatherClient/WeatherClient.client';
-import { OpenWeatherMapReport } from '../types/WeatherDataTypes';
+import WeatherClient from '../../clients/WeatherClient/WeatherClient.client';
+import { OpenWeatherMapReport } from '../../types/WeatherDataTypes';
 import {
     NotFoundError,
     UnauthorizedError,
@@ -13,11 +9,6 @@ import {
 } from './WeatherServiceErrors';
 
 class WeatherService {
-    private client: AxiosInstance;
-
-    constructor() {
-        this.client = createAxiosClient({ baseURL: 'http://localhost:3001/weather' })
-    }
 
     public getWeatherForCity = async (city: string): Promise<OpenWeatherMapReport> => {
         try {
@@ -38,8 +29,6 @@ class WeatherService {
             }
         }
     }
-
-
 }
 
 export default new WeatherService();

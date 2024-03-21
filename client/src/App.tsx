@@ -6,8 +6,8 @@ import { ThemeProvider } from "styled-components";
 
 import CityWeather from "./components/features/CityWeather/CityWeather";
 import WeatherCard from "./components/features/WeatherCard/WeatherCard";
-import WeatherService from "./services/WeatherService.service";
-import { handleWeatherErrors } from "./services/WeatherServiceErrors";
+import WeatherService from "./services/WeatherService/WeatherService.service";
+import { handleWeatherErrors } from "./services/WeatherService/WeatherServiceErrors";
 import defaultTheme from "./styles/themes/defaultTheme";
 import GlobalStyle from "./styles/themes/GlobalStyle";
 import { OpenWeatherMapReport } from "./types/WeatherDataTypes";
