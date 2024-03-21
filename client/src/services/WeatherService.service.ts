@@ -1,10 +1,10 @@
 import {
     AxiosError,
     AxiosInstance,
-    AxiosResponse,
 } from 'axios';
 
 import createAxiosClient from '../clients/axiosClient';
+import WeatherClient from '../clients/WeatherClient/WeatherClient.client';
 import { OpenWeatherMapReport } from '../types/WeatherDataTypes';
 import {
     NotFoundError,
@@ -19,10 +19,9 @@ class WeatherService {
         this.client = createAxiosClient({ baseURL: 'http://localhost:3001/weather' })
     }
 
-    public getWeatherForCity = async (city: string) => {
+    public getWeatherForCity = async (city: string): Promise<OpenWeatherMapReport> => {
         try {
-            const response: AxiosResponse<OpenWeatherMapReport> = await this.client.get<OpenWeatherMapReport>(`/${city}`)
-            return response.data
+            return await WeatherClient.getWeatherForCity(city)
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response?.status) {
@@ -39,6 +38,8 @@ class WeatherService {
             }
         }
     }
+
+
 }
 
 export default new WeatherService();

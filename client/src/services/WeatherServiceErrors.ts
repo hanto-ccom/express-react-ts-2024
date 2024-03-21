@@ -1,7 +1,7 @@
 export class WeatherServiceError extends Error {
     constructor(message: string) {
         super(message)
-        this.name = 'WeatherServiceError'
+        this.name = 'WeatherServiceError' //for logging purposes
     }
 }
 
