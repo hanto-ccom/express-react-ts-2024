@@ -7,10 +7,18 @@ const Button = styled.button`
   background: orange;
   color: white;
   border-color: orange;
+  outline: none;
+  border-width: 1px;
 
   &:hover,
   &:focus {
     border-color: gray;
+  }
+
+  &[disabled] {
+    background-color: ${(props) => props.theme.palette.gloom};
+    border-color: ${(props) => props.theme.palette.pitchBlack};
+    cursor: default;
   }
 `;
 
