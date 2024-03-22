@@ -17,13 +17,14 @@ const PORT = process.env.PORT || 3001;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// A simple route that sends back a hello message
+// Weather route
 app.use('/weather', weatherRouter)
 
 app.get('*', (req: Request, res: Response) => {
     res.status(404).send('404 Not Found');
 });
 
+//use the errorHandler middleware function
 app.use(errorHandler)
 
 // Listen on the specified port
