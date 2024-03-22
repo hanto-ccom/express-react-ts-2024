@@ -34,15 +34,8 @@ const WeatherCard = styled.div.withConfig({
   }
 `;
 
-const WeatherCardCondition = styled.div`
-  & p {
-    text-transform: uppercase;
-  }
-`;
-
 const Styled = {
   WeatherCard,
-  WeatherCardCondition,
 };
 
 export default Styled;

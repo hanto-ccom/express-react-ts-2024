@@ -1,5 +1,6 @@
 import { OpenWeatherMapReport } from "../../../types/WeatherDataTypes";
 import Loader from "../Loader/Loader";
+import WeatherInfo from "../WeatherInfo/WeatherInfo";
 import Styled from "./WeatherCard.style";
 
 const WeatherCard: React.FC<{
@@ -8,28 +9,17 @@ const WeatherCard: React.FC<{
 }> = ({ weatherData, isLoading }): JSX.Element => {
   return (
     <Styled.WeatherCard isLoading={isLoading}>
-      {isLoading && <Loader isLoading={isLoading} />}
-      {!isLoading &&
-        weatherData?.weather.map((w, index) => (
-          <Styled.WeatherCardCondition key={index}>
-            <img
-              key={`${index}-${w.icon}`}
-              src={`https://openweathermap.org/img/wn/${w.icon}@2x.png`}
-              width={100}
-              height={100}
-            />
-            <p>{w.description}</p>
-          </Styled.WeatherCardCondition>
-        ))}
-
-      {!isLoading && weatherData && (
-        <p>
-          Temp in {weatherData?.name} is{" "}
-          {weatherData && Math.round(weatherData?.main.temp)} °C
-        </p>
+      {isLoading ? (
+        <Loader isLoading={isLoading} />
+      ) : weatherData ? (
+        <WeatherInfo
+          cityName={weatherData?.name}
+          cityTemp={weatherData?.main.temp}
+          weatherData={weatherData?.weather}
+        />
+      ) : (
+        <p>Search a city</p>
       )}
-
-      {!isLoading && !weatherData && <p>Search a city</p>}
     </Styled.WeatherCard>
   );
 };
