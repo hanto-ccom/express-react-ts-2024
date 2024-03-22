@@ -1,4 +1,5 @@
 import { OpenWeatherMapReport } from "../../../types/WeatherDataTypes";
+import Loader from "../Loader/Loader";
 import Styled from "./WeatherCard.style";
 
 const WeatherCard: React.FC<{
@@ -6,8 +7,8 @@ const WeatherCard: React.FC<{
   isLoading: boolean;
 }> = ({ weatherData, isLoading }): JSX.Element => {
   return (
-    <Styled.WeatherCard>
-      {isLoading && <p>Loading data...</p>}
+    <Styled.WeatherCard isLoading={isLoading}>
+      {isLoading && <Loader isLoading={isLoading} />}
       {!isLoading &&
         weatherData?.weather.map((w, index) => (
           <Styled.WeatherCardCondition key={index}>

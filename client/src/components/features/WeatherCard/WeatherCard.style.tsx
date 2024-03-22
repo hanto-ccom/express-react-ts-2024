@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-const WeatherCard = styled.div`
+const WeatherCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["isLoading"].includes(prop),
+})<{ isLoading: boolean }>`
   margin: 0 auto;
 
   position: relative;
@@ -20,12 +22,13 @@ const WeatherCard = styled.div`
 
   &::after {
     content: "";
+    display: ${(props) => (props.isLoading ? `none` : `block`)};
     position: absolute;
-
     top: 50%;
 
     width: 150px;
     height: 5px;
+    margin-bottom: ${(props) => props.theme.margin.sm};
 
     background-color: green;
   }
