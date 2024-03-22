@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import { ThemeProvider } from "styled-components";
 
-import CityWeather from "./components/features/CityWeather/CityWeather";
-import WeatherCard from "./components/features/WeatherCard/WeatherCard";
+import { CityWeather, WeatherCard } from "./components/features/WeatherCard";
 import WeatherService from "./services/WeatherService/WeatherService.service";
 import { handleWeatherErrors } from "./services/WeatherService/WeatherServiceErrors";
 import defaultTheme from "./styles/themes/defaultTheme";

@@ -1,4 +1,4 @@
-import { WeatherCondition } from "../../../types/WeatherDataTypes";
+import { WeatherCondition } from "../../../../../types/WeatherDataTypes";
 import StyledWeatherInfo from "./WeatherInfo.style";
 
 type WeatherInfoProps = {

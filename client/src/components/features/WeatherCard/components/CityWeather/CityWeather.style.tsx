@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
 
-import { wiggleMixin } from "../../../styles/mixins/wiggleMixin";
-import ButtonStyle from "../../atoms/Button/Button.style";
-import InputStyle from "../../atoms/Input/Input.style";
+import { wiggleMixin } from "../../../../../styles/mixins/wiggleMixin";
+import ButtonStyle from "../../../../atoms/Button/Button.style";
+import InputStyle from "../../../../atoms/Input/Input.style";
 
 const CityWeatherDiv = styled.div`
   display: flex;

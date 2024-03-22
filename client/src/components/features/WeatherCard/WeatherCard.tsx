@@ -1,6 +1,6 @@
 import { OpenWeatherMapReport } from "../../../types/WeatherDataTypes";
-import Loader from "../Loader/Loader";
-import WeatherInfo from "../WeatherInfo/WeatherInfo";
+import Loader from "../../atoms/Loader/Loader";
+import { WeatherInfo } from "./index";
 import Styled from "./WeatherCard.style";
 
 const WeatherCard: React.FC<{
