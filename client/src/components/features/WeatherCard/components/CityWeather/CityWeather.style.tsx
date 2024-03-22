@@ -10,6 +10,8 @@ const CityWeatherDiv = styled.div`
   justify-content: center;
   align-items: center;
 
+  margin-bottom: 24px;
+
   form {
     display: flex;
     flex-direction: column;

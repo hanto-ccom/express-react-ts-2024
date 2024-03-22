@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { ThemeProvider } from "styled-components";
 
+import Error from "./components/error/Error";
 import { CityWeather, WeatherCard } from "./components/features/WeatherCard";
 import WeatherService from "./services/WeatherService/WeatherService.service";
 import { handleWeatherErrors } from "./services/WeatherService/WeatherServiceErrors";
@@ -34,11 +35,8 @@ function App() {
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyle />
       <CityWeather onCitySubmit={onFomSubmit} />
-      <br />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />
-      <p style={{ color: "gray", minHeight: "25px", marginTop: "25px" }}>
-        {error && error}
-      </p>
+      <Error error={error} />
     </ThemeProvider>
   );
 }
