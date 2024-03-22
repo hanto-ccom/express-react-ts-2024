@@ -1,4 +1,17 @@
 
+## Structure
+ - Root
+   - npm install
+   - npm run start:client
+   - npm run start:server
+   - npm run dev
+   - Client
+     - npm install
+     - npm run dev
+   - Server
+     - npm install
+     - npm run dev
+
 ## Client
 - React Typescript
 - Clients
