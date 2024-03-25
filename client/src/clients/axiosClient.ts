@@ -1,5 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
 
+import {
+    RefreshAccessToken,
+    setAccessToken,
+} from '../utilities/RefreshToken';
+
 interface CreateAxiosClientOptions {
     baseURL?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,12 +39,31 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
     // - Response
     instance.interceptors.response.use(
         (response) => response, //2xx - all good
-        (error) => {
+        async (error) => {
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
                         console.error("Unauthorized access - 401", error);
-                        // Handle token refresh, user redirection, or emit an event here
+                        // Handle token refresh, user redirection, or emit an event here             
+                        if (!error.config._retry) {
+                            // Mark this request as having been retried
+                            error.config._retry = true;
+
+                            try {
+                                const newAccessToken = await RefreshAccessToken();
+                                setAccessToken(newAccessToken)
+                                instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+                                error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                                return instance(error.config)
+                            } catch (refreshError) {
+                                //handle failed refesh
+                                localStorage.removeItem('accessToken');
+                                localStorage.removeItem('refreshToken');
+                                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                                return Promise.reject(refreshError);
+                            }
+                        }
+
                         break;
                     case 404:
                         console.error("Not Found - 404", error);
@@ -53,7 +77,7 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                 // Handle errors not directly related to the HTTP response (network errors, etc.)
                 console.error("An error occurred", error);
             }
-            return Promise.reject(error);
+            return Promise.reject(error); //handles unresolved errors
         }
     );
 
