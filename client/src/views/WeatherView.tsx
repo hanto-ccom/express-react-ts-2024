@@ -15,8 +15,10 @@ const WeatherView = () => {
     setIsLoading(true);
     setError(undefined);
     try {
-      const cityData = await WeatherServiceService.getWeatherForCity(city);
-      setWeatherData(cityData);
+      const weatherResponseData = await WeatherServiceService.getWeatherForCity(
+        city
+      );
+      setWeatherData(weatherResponseData);
     } catch (error) {
       setWeatherData(undefined);
       handleWeatherErrors(error, setError);
