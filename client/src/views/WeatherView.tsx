@@ -11,7 +11,7 @@ const WeatherView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
-  const onFomSubmit = async (city: string) => {
+  const onFormSubmit = async (city: string) => {
     setIsLoading(true);
     setError(undefined);
     try {
@@ -29,7 +29,7 @@ const WeatherView = () => {
 
   return (
     <>
-      <CityWeather onCitySubmit={onFomSubmit} />
+      <CityWeather onCitySubmit={onFormSubmit} />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />
       <Error error={error} />
     </>
