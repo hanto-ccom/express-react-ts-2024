@@ -13,7 +13,7 @@ import { HttpError } from './errorHandler';
  *  - see /test -route for example
  */
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
     user?: JwtPayload;
 }
 
@@ -28,7 +28,7 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
         req.user = decoded as jwt.JwtPayload;
         next();
     } catch (error) {
-        const authError = new HttpError('Invalid token. Please authenticate again', 401)
+        const authError = new HttpError('Authentication failed', 401)
         next(authError)
     }
 };

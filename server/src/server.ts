@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import auth from './middleware/authenticationHandler';
 import { errorHandler } from './middleware/errorHandler';
 import authenticationRouter from './routes/AuthenticationRoutes';
+import userRouter from './routes/UserRoutes';
 import weatherRouter from './routes/WeatherRoutes';
 
 // Create an instance of express to serve our end points
@@ -30,6 +31,10 @@ app.use('/weather', weatherRouter)
 app.get('/test', auth, (req, res) => {
     res.status(200).json('Protected route')
 })
+
+app.use('/user', auth, userRouter)
+
+//--- end protected routes-------
 
 app.get('*', (req: Request, res: Response) => {
     res.status(404).send('404 Not Found');

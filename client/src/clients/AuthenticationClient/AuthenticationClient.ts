@@ -53,6 +53,26 @@ class AuthenticationClient {
         }
     }
 
+    public refreshToken = async (refreshToken: string) => {
+        try {
+            const response: AxiosResponse = await this.axiosClient.post('/token', {
+                refreshToken
+            })
+
+            return response.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response) {
+                console.error("error refreshing token")
+            } else {
+                console.error("Network or not-http error in AuthClient ", axiosError.message)
+            }
+            throw axiosError;
+        }
+
+    }
+
+
     public setAxiosInstance = (mockInstance: AxiosInstance) => {
         this.axiosClient = mockInstance;
     }

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Error from "../components/error/Error";
 import { CityWeather, WeatherCard } from "../components/features/WeatherCard";
+import { useAuth } from "../contexts/AuthContext/AuthContext";
 import WeatherServiceService from "../services/WeatherService/WeatherService.service";
 import { handleWeatherErrors } from "../services/WeatherService/WeatherServiceErrors";
 import { OpenWeatherMapReport } from "../types/WeatherDataTypes";
@@ -10,7 +11,7 @@ const WeatherView = () => {
   const [weatherData, setWeatherData] = useState<OpenWeatherMapReport>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>();
-
+  const { user } = useAuth();
   const onFormSubmit = async (city: string) => {
     setIsLoading(true);
     setError(undefined);
@@ -29,6 +30,7 @@ const WeatherView = () => {
 
   return (
     <>
+      <p style={{ color: "gray" }}>Welcome {user?.username}</p>
       <CityWeather onCitySubmit={onFormSubmit} />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />
       <Error error={error} />

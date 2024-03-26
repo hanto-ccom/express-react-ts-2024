@@ -43,7 +43,12 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
-                        console.error("Unauthorized access - 401", error);
+                        // Check if it's a login request or if a refresh attempt has already been made
+                        if (error.config.url.includes('/login') || error.config._retry) {
+                            // For login requests or already retried requests, don't attempt to refresh the token
+                            return Promise.reject(error);
+                        }
+
                         // Handle token refresh, user redirection, or emit an event here             
                         if (!error.config._retry) {
                             // Mark this request as having been retried
