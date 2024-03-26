@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 
 import AuthenticationClient
-    from '../../../clients/AuthenticationClient/AuthenticationClient';
+    from '../../clients/AuthenticationClient/AuthenticationClient';
 import {
     AuthServiceError,
     NotFoundError,

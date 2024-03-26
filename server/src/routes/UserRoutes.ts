@@ -5,6 +5,6 @@ import { getUserByUserIdFromToken } from '../controllers/UserController';
 //router
 const router = express.Router();
 
-router.get('/', getUserByUserIdFromToken)
+router.get('/data', getUserByUserIdFromToken)
 
 export default router;

@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
 
-import AuthService from "../../services/WeatherService/AuthService/AuthService.service";
+import AuthService from "../../services/AuthService/AuthService.service";
+import UserService from "../../services/UserService/User.service";
 
 interface User {
   // Adjust these fields based on what you consider to be your user's information
@@ -37,6 +38,10 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   const [loading, setIsLoading] = useState<boolean>(true);
 
   const login = async (username: string, password: string) => {
+    //clear any old tokens
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
     const userResponse = await AuthService.loginUser(username, password);
     if (userResponse) {
       localStorage.setItem("accessToken", userResponse.accessToken);
@@ -62,11 +67,12 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) {
       logout();
-      throw new Error("No refresh token available");
+      return;
+      // throw new Error("No refresh token available");
     }
     try {
-      const data = await AuthService.refreshToken(refreshToken); // Implement this in your AuthService
-      localStorage.setItem("accessToken", data.accessToken);
+      const token = await AuthService.refreshToken(refreshToken); // Implement this in your AuthService
+      localStorage.setItem("accessToken", token);
       // Optionally update the refresh token if a new one is returned
       //localStorage.setItem("refreshToken", data.refreshToken || refreshToken);
     } catch (error) {
@@ -75,7 +81,17 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     }
   };
 
-  //cosnt fetchUserData = async ()
+  const fetchUserData = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      //throw new Error("No accesstoken available");
+      return;
+    }
+
+    const data = await UserService.fectchUser(accessToken);
+
+    setUser(data);
+  };
 
   useEffect(() => {
     // On app load, attempt to refresh token if refresh token exists
@@ -84,14 +100,17 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
       try {
         await refreshToken(); // Attempt to refresh the token on app start
         // If refreshToken is successful, the user is considered logged in
-      } catch {
+        await fetchUserData();
+      } catch (error) {
+        setUser(undefined);
         // Handle failure, which might include doing nothing if you simply show the login screen
+        console.error("Error init auth: ", error);
       } finally {
         setIsLoading(false);
       }
     };
     initAuth();
-  });
+  }, []);
 
   return (
     <AuthContext.Provider

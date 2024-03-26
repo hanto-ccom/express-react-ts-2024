@@ -2,9 +2,10 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import Error from "../components/error/Error";
-import { useAuth } from "../contexts/AuthContext/AuthContext";
-import { handleAuthErrors } from "../services/WeatherService/AuthService/AuthServiceErrors";
+import Error from "../../components/error/Error";
+import { useAuth } from "../../contexts/AuthContext/AuthContext";
+import { handleAuthErrors } from "../../services/AuthService/AuthServiceErrors";
+import Styled from "./LoginView.style";
 
 const LoginView = () => {
   const [username, setUserName] = useState<string>("");
@@ -25,23 +26,28 @@ const LoginView = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
+    <Styled.LoginViewWrapperDiv>
+      <Styled.LoginViewForm onSubmit={handleSubmit}>
         <input
           type="text"
           name="username"
+          placeholder="username"
           onChange={(e) => setUserName(e.target.value)}
         ></input>
         <input
           type="password"
           name="password"
+          placeholder="password"
           autoComplete="on"
           onChange={(e) => setPassword(e.target.value)}
         ></input>
         <button type="submit">Login</button>
+        <p style={{ fontSize: "10px", color: "gray" }}>
+          Not registered? <span style={{ color: "blue" }}>Sign up</span>
+        </p>
         <Error error={error} />
-      </form>
-    </>
+      </Styled.LoginViewForm>
+    </Styled.LoginViewWrapperDiv>
   );
 };
 
