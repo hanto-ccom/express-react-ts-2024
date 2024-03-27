@@ -5,7 +5,7 @@ import {
     Response,
 } from 'express';
 
-interface CustomError extends Error {
+export interface CustomError extends Error {
     status?: number;
 }
 

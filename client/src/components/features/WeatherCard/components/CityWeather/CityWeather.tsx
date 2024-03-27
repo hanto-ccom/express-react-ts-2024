@@ -47,6 +47,7 @@ const CityWeather: React.FC<CityWeatherProps> = ({ onCitySubmit, ...rest }) => {
             type="submit"
             onMouseEnter={() => onMouseEnter()}
             noInput={!hasInput}
+            variant={"lg"}
           >
             Find
           </Styled.CityWeatherButton>
