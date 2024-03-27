@@ -66,7 +66,7 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                                 //handle failed refesh
                                 localStorage.removeItem('accessToken');
                                 localStorage.removeItem('refreshToken');
-                                //window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
                                 return Promise.reject(refreshError);
                             }
                         }
