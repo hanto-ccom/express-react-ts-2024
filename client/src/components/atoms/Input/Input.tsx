@@ -6,7 +6,7 @@ type InputProps = React.DetailedHTMLProps<
 >;
 
 const Input: React.FC<InputProps> = (props): JSX.Element => {
-  return <Styled.Input {...props} placeholder="Enter city here..." />;
+  return <Styled.Input {...props} />;
 };
 
 export default Input;

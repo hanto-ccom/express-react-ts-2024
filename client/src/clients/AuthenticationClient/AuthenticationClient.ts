@@ -14,11 +14,14 @@ class AuthenticationClient {
         this.axiosClient = createAxiosClient({ baseURL: 'http://localhost:3001/authentication' })
     }
 
-    public registerUser = async (username: string, password: string) => {
+    public registerUser = async (username: string, password: string, firstname: string, lastname: string, email: string) => {
         try {
             const response: AxiosResponse = await this.axiosClient.post('/register', {
                 username,
-                password
+                password,
+                firstname,
+                lastname,
+                email
             })
             return response.data
         } catch (error) {

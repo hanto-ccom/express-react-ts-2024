@@ -11,9 +11,15 @@ interface DecodedToken extends JwtPayload {
 
 
 class AuthenticationService {
-    async registerUser(username: string, password: string) {
+    async registerUser(username: string, password: string, firstname: string, lastname: string, email: string) {
         try {
-            let user = new User({ username, password });
+
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                throw new HttpError('User already exists', 400);
+            }
+
+            let user = new User({ username, password, firstname, lastname, email });
             user = await user.save();
 
             //create jwt token for user

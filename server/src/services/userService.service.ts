@@ -9,7 +9,7 @@ class UserService {
                 throw new HttpError('User not found', 404)
             }
 
-            return { username: user.username, _id: user.id };
+            return { username: user.username, firstname: user.firstname, lastname: user.lastname, email: user.email, _id: user.id };
         } catch (error) {
             throw error
         }

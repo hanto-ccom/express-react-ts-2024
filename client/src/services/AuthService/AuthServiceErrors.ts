@@ -43,6 +43,7 @@ export class TokenRefreshNetworkError extends AuthServiceError {
 }
 
 
+
 export const handleAuthErrors = (error: unknown, setError?: React.Dispatch<React.SetStateAction<string | undefined>>): void => {
     // Assuming all custom errors extend WeatherServiceError
     if (error instanceof AuthServiceError) {

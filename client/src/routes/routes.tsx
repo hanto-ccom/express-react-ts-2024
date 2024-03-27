@@ -3,7 +3,8 @@ import { RouteObject } from "react-router-dom";
 import AuthRedirect from "../components/features/AuthRedirect/AuthRedirect";
 import ProtectedRoute from "../components/features/ProtectedRoute/ProtectedRoute";
 import LoginView from "../views/LoginView/LoginView";
-import WeatherView from "../views/WeatherView";
+import RegisterView from "../views/RegisterView/RegisterView";
+import WeatherView from "../views/WeatherView/WeatherView";
 
 const useRoutes = () => {
   const routes: Array<RouteObject> = [
@@ -12,6 +13,7 @@ const useRoutes = () => {
       element: <AuthRedirect />,
     },
     { path: "/login", element: <LoginView /> },
+    { path: "/register", element: <RegisterView /> },
     {
       path: "/weather",
       element: (
