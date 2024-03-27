@@ -8,9 +8,9 @@ import { HttpError } from '../middleware/errorHandler';
 import authenticationService from '../services/authenticationService.service';
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { username, password } = req.body;
+    const { username, password, firstname, lastname, email } = req.body;
     try {
-        const userData = await authenticationService.registerUser(username, password)
+        const userData = await authenticationService.registerUser(username, password, firstname, lastname, email)
         if (!userData) {
             throw new HttpError('Error getting userdata', 404)
         }

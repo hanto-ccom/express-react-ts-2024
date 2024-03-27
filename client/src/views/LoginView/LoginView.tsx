@@ -35,6 +35,7 @@ const LoginView = () => {
           name="username"
           placeholder="username"
           onChange={(e) => setUserName(e.currentTarget.value)}
+          required
         />
         <Input
           type="password"
@@ -42,6 +43,7 @@ const LoginView = () => {
           placeholder="password"
           autoComplete="on"
           onChange={(e) => setPassword(e.currentTarget.value)}
+          required
         />
         <Button type="submit">Login</Button>
         <p style={{ fontSize: "10px", color: "gray" }}>

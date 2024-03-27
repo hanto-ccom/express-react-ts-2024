@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/atoms/Button/Button";
 import Input from "../../components/atoms/Input/Input";
 import Error from "../../components/error/Error";
+import AuthServiceService from "../../services/AuthService/AuthService.service";
+import { handleRegistrationErrors } from "../../services/AuthService/RegistrationErrors";
 import Styled from "./RegisterView.style";
 
 const RegisterView = () => {
@@ -16,11 +18,11 @@ const RegisterView = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>();
 
   const navigate = useNavigate();
 
-  const handleRegister = (e: FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== verifyPassword) {
       setError("Passwords do not match");
@@ -28,22 +30,27 @@ const RegisterView = () => {
     }
 
     try {
-      setError("");
-      //call register enpdoint
+      setError(undefined);
+      await AuthServiceService.registerUser(
+        username,
+        password,
+        firstName,
+        lastName,
+        email
+      );
 
-      //navigat to login
       navigate("/login");
     } catch (error) {
-      //TODO:handle auth errors with handlefunction like the other
-      setError("failed to register, please try again");
+      handleRegistrationErrors(error, setError);
     }
-
-    console.log("Registeration submitted");
   };
 
   return (
     <Styled.RegisterViewWrapperDiv>
       <Styled.RegisterForm onSubmit={handleRegister}>
+        {/* <label htmlFor="username" style={{ color: "gray" }}>
+          Username
+        </label> */}
         <Input
           name="username"
           type="text"
@@ -52,6 +59,9 @@ const RegisterView = () => {
           onChange={(e) => setUsername(e.currentTarget.value)}
           required
         />
+        {/* <label htmlFor="password" style={{ color: "gray" }}>
+          Password
+        </label> */}
         <Input
           name="password"
           type="password"
@@ -96,7 +106,17 @@ const RegisterView = () => {
           required
         />
         <Button type="submit">Register</Button>
+        <p style={{ fontSize: "10px", color: "gray" }}>
+          Already registered?{" "}
+          <span
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </p>
       </Styled.RegisterForm>
+
       <Error error={error} />
     </Styled.RegisterViewWrapperDiv>
   );
