@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import Button from "../../components/atoms/Button/Button";
+import Input from "../../components/atoms/Input/Input";
 import Error from "../../components/error/Error";
 import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { handleAuthErrors } from "../../services/AuthService/AuthServiceErrors";
@@ -28,22 +30,28 @@ const LoginView = () => {
   return (
     <Styled.LoginViewWrapperDiv>
       <Styled.LoginViewForm onSubmit={handleSubmit}>
-        <input
+        <Input
           type="text"
           name="username"
           placeholder="username"
-          onChange={(e) => setUserName(e.target.value)}
-        ></input>
-        <input
+          onChange={(e) => setUserName(e.currentTarget.value)}
+        />
+        <Input
           type="password"
           name="password"
           placeholder="password"
           autoComplete="on"
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
-        <button type="submit">Login</button>
+          onChange={(e) => setPassword(e.currentTarget.value)}
+        />
+        <Button type="submit">Login</Button>
         <p style={{ fontSize: "10px", color: "gray" }}>
-          Not registered? <span style={{ color: "blue" }}>Sign up</span>
+          Not registered?{" "}
+          <span
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={() => navigate("/register")}
+          >
+            Sign up
+          </span>
         </p>
         <Error error={error} />
       </Styled.LoginViewForm>

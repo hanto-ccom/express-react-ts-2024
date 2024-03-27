@@ -1,12 +1,15 @@
 import { useState } from "react";
 
-import Button from "../components/atoms/Button/Button";
-import Error from "../components/error/Error";
-import { CityWeather, WeatherCard } from "../components/features/WeatherCard";
-import { useAuth } from "../contexts/AuthContext/AuthContext";
-import WeatherServiceService from "../services/WeatherService/WeatherService.service";
-import { handleWeatherErrors } from "../services/WeatherService/WeatherServiceErrors";
-import { OpenWeatherMapReport } from "../types/WeatherDataTypes";
+import Button from "../../components/atoms/Button/Button";
+import Error from "../../components/error/Error";
+import {
+  CityWeather,
+  WeatherCard,
+} from "../../components/features/WeatherCard";
+import { useAuth } from "../../contexts/AuthContext/AuthContext";
+import WeatherServiceService from "../../services/WeatherService/WeatherService.service";
+import { handleWeatherErrors } from "../../services/WeatherService/WeatherServiceErrors";
+import { OpenWeatherMapReport } from "../../types/WeatherDataTypes";
 
 const WeatherView = () => {
   const [weatherData, setWeatherData] = useState<OpenWeatherMapReport>();
