@@ -92,6 +92,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   };
 
   useEffect(() => {
+    console.log("Use Effect on refresh");
     // On app load, attempt to refresh token if refresh token exists
     // Set loading to false afterwards to render the app
     const initAuth = async () => {
