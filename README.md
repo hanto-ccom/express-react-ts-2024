@@ -1,4 +1,7 @@
-
+##Pre-requisites
+- node 16+
+- mongoDB
+  
 ## Structure
  - Root
    - npm install
@@ -27,3 +30,5 @@
 ### OpenWeaterMap API-key needed in Server
 create a .env file and add:
 OPEN_WEATHER_API_KEY="your-key-here"
+JWT_SECRET="<your secret here>"
+JWT_REFRESH_SECRET="<your refresh secret here>"
