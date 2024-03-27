@@ -36,7 +36,8 @@ const WeatherView = () => {
   return (
     <>
       <p style={{ color: "gray" }}>
-        Welcome {user?.username} <Button onClick={logout}>Log out</Button>
+        Welcome {user?.firstname} {user?.lastname}{" "}
+        <Button onClick={logout}>Log out</Button>
       </p>
       <CityWeather onCitySubmit={onFormSubmit} />
       <WeatherCard weatherData={weatherData} isLoading={isLoading} />

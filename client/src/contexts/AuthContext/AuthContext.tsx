@@ -8,6 +8,9 @@ interface User {
   // Adjust these fields based on what you consider to be your user's information
   id: string;
   username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
   isLoggedIn: boolean;
 }
 
@@ -44,14 +47,14 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
 
     const userResponse = await AuthService.loginUser(username, password);
     if (userResponse) {
+      console.log("userResponse: ", userResponse);
       localStorage.setItem("accessToken", userResponse.accessToken);
       localStorage.setItem(
         "refreshToken",
         userResponse.user.refreshTokens?.slice(-1)
       );
       setUser({
-        id: userResponse.user._id,
-        username: userResponse.user.username,
+        ...userResponse.user,
         isLoggedIn: true,
       });
     }
