@@ -55,7 +55,9 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                             error.config._retry = true;
 
                             try {
+                                console.log("trying to get refreshtoken via axiosinterceptor for 401")
                                 const newAccessToken = await RefreshAccessToken();
+                                console.log("new accessToken from interceptor: ", newAccessToken)
                                 setAccessToken(newAccessToken)
                                 instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
                                 error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
@@ -64,7 +66,7 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                                 //handle failed refesh
                                 localStorage.removeItem('accessToken');
                                 localStorage.removeItem('refreshToken');
-                                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                                //window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
                                 return Promise.reject(refreshError);
                             }
                         }

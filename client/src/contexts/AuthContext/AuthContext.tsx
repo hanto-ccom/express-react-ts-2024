@@ -71,10 +71,8 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
       // throw new Error("No refresh token available");
     }
     try {
-      const token = await AuthService.refreshToken(refreshToken); // Implement this in your AuthService
-      localStorage.setItem("accessToken", token);
-      // Optionally update the refresh token if a new one is returned
-      //localStorage.setItem("refreshToken", data.refreshToken || refreshToken);
+      const accessToken = await AuthService.refreshToken(refreshToken);
+      localStorage.setItem("accessToken", accessToken);
     } catch (error) {
       logout();
       throw error;

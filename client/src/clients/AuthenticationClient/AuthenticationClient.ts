@@ -44,7 +44,7 @@ class AuthenticationClient {
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response) {
-                console.log(`HTTP error from AuthClient: ${axiosError.response.status}`, axiosError.message)
+                console.error(`HTTP error from AuthClient: ${axiosError.response.status}`, axiosError.message)
             } else {
                 console.error('Network or non-HTTP error in AuthClient ', axiosError.message)
             }

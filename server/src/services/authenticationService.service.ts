@@ -44,16 +44,16 @@ class AuthenticationService {
         }
     }
 
-    async refreshToken(token: string) {
+    async refreshToken(oldRefeshToken: string) {
         try {
-            const user = await User.findOne({ refreshTokens: token });
+            const user = await User.findOne({ refreshTokens: oldRefeshToken });
             if (!user) {
                 throw new HttpError('No matching user for provided token', 403);
             }
 
             // Correctly handling the jwt.verify call            
             const decodedToken = await new Promise((resolve, reject) => {
-                jwt.verify(token, config.jwt.refreshSecret, (err: any, decoded: any) => {
+                jwt.verify(oldRefeshToken, config.jwt.refreshSecret, (err: any, decoded: any) => {
                     if (err) {
                         reject(new HttpError('Token verification failed', 403))
                     }

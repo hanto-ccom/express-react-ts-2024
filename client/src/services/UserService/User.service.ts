@@ -1,6 +1,12 @@
 import { AxiosError } from 'axios';
 
 import UserClient from '../../clients/UserClient/User.client';
+import { NetworkOrUnknownError } from '../GeneralErrors';
+import {
+    UnexpectedUserServiceError,
+    UserNotFoundError,
+    UserUnauthorizedError,
+} from './UserServiceErrors';
 
 class UserService {
     public fectchUser = async (accessToken: string) => {
@@ -12,14 +18,14 @@ class UserService {
                 switch (axiosError.response.status) {
                     //TODO fix proper errors
                     case 401:
-                        break;
+                        throw new UserUnauthorizedError()
                     case 404:
-                        break;
+                        throw new UserNotFoundError()
                     default:
-                        throw new Error('An error occoured trying to fetch user data')
+                        throw new UnexpectedUserServiceError()
                 }
             } else {
-                throw new Error('Unexpected error getting user data')
+                throw new NetworkOrUnknownError()
             }
 
         }

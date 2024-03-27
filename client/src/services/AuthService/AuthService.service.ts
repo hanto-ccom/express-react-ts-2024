@@ -2,9 +2,13 @@ import { AxiosError } from 'axios';
 
 import AuthenticationClient
     from '../../clients/AuthenticationClient/AuthenticationClient';
+import { NetworkOrUnknownError } from '../GeneralErrors';
 import {
     AuthServiceError,
     NotFoundError,
+    TokenExpiredError,
+    TokenInvalidError,
+    TokenRefreshNetworkError,
     UnauthorizedError,
 } from './AuthServiceErrors';
 
@@ -25,7 +29,7 @@ class AuthService {
                         throw new AuthServiceError(`An error occured fetching user data`)
                 }
             } else {
-                throw new AuthServiceError('Unexpected error getting user data')
+                throw new NetworkOrUnknownError();
             }
         }
     }
@@ -38,14 +42,14 @@ class AuthService {
             if (axiosError.response?.status) {
                 switch (axiosError.response.status) {
                     case 401:
-                        break;
+                        throw new TokenExpiredError()
                     case 404:
-                        break;
+                        throw new TokenInvalidError()
                     default:
                         throw new AuthServiceError(`An error occured trying to refresh token`)
                 }
             } else {
-                throw new AuthServiceError('Unexpected error getting user data')
+                throw new TokenRefreshNetworkError();
             }
 
         }

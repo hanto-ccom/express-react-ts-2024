@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 
 import WeatherClient from '../../clients/WeatherClient/WeatherClient.client';
 import { OpenWeatherMapReport } from '../../types/WeatherDataTypes';
+import { NetworkOrUnknownError } from '../GeneralErrors';
 import {
     NotFoundError,
     UnauthorizedError,
@@ -25,7 +26,7 @@ class WeatherService {
                         throw new WeatherServiceError('An error occured fetching weather data')
                 }
             } else {
-                throw new WeatherServiceError('Unexpected error getting weather data')
+                throw new NetworkOrUnknownError();
             }
         }
     }
