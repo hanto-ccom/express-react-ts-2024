@@ -16,7 +16,6 @@ class UserService {
             const axiosError = error as AxiosError;
             if (axiosError.response?.status) {
                 switch (axiosError.response.status) {
-                    //TODO fix proper errors
                     case 401:
                         throw new UserUnauthorizedError()
                     case 404:
