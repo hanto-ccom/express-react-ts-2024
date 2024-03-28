@@ -29,3 +29,7 @@ logs
 *.swp
 *.swo
 .DS_Store
+
+# SSL certificates
+server.key
+server.cert

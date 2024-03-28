@@ -10,17 +10,12 @@ class UserClient {
     private axiosClient: AxiosInstance
 
     constructor() {
-        this.axiosClient = createAxiosClient({ baseURL: 'http://localhost:3001/user' })
+        this.axiosClient = createAxiosClient({ baseURL: 'https://localhost:3001/user' })
     }
 
-    public getUserWithToken = async (token: string) => {
+    public getUserWithToken = async () => {
         try {
-            const response: AxiosResponse = await this.axiosClient.get('/data', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-
+            const response: AxiosResponse = await this.axiosClient.get('/data', { withCredentials: true })
             return response.data;
         } catch (error) {
             const axiosError = error as AxiosError;

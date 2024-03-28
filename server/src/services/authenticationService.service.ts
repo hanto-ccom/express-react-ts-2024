@@ -53,7 +53,7 @@ class AuthenticationService {
             user.refreshTokens.push(refreshToken);
             await user.save();
 
-            return { user, accessToken }
+            return { user, accessToken, refreshToken }
         } catch (error) {
             throw error
         }
@@ -83,7 +83,7 @@ class AuthenticationService {
             }
 
             const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' })
-            return accessToken;
+            return { accessToken };
         } catch (error) {
             throw error;
         }

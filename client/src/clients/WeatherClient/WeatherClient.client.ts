@@ -11,7 +11,7 @@ class WeatherClient {
     private axiosClient: AxiosInstance
 
     constructor() {
-        this.axiosClient = createAxiosClient({ baseURL: 'http://localhost:3001/weather' })
+        this.axiosClient = createAxiosClient({ baseURL: 'https://localhost:3001/weather' })
     }
 
     public getWeatherForCity = async (city: string): Promise<OpenWeatherMapReport> => {

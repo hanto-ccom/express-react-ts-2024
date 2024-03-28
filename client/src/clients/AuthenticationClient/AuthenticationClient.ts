@@ -11,7 +11,7 @@ class AuthenticationClient {
     private axiosClient: AxiosInstance
 
     constructor() {
-        this.axiosClient = createAxiosClient({ baseURL: 'http://localhost:3001/authentication' })
+        this.axiosClient = createAxiosClient({ baseURL: 'https://localhost:3001/authentication' })
     }
 
     public registerUser = async (username: string, password: string, firstname: string, lastname: string, email: string) => {
@@ -56,11 +56,9 @@ class AuthenticationClient {
         }
     }
 
-    public refreshToken = async (refreshToken: string) => {
+    public refreshToken = async () => {
         try {
-            const response: AxiosResponse = await this.axiosClient.post('/token', {
-                refreshToken
-            })
+            const response: AxiosResponse = await this.axiosClient.post('/token', { withCredentials: true })
 
             return response.data;
         } catch (error) {

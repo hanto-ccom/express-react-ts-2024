@@ -8,7 +8,6 @@ type ProtectedRouteProps = {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
-
   // If not authenticated, redirect to login page
   if (loading) {
     // Optionally, return a loading indicator or null while checking auth state

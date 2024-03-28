@@ -17,6 +17,7 @@ export interface AuthRequest extends Request {
     user?: JwtPayload;
 }
 
+//used when localstorage was used
 const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -33,4 +34,21 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
     }
 };
 
-export default auth;
+//when cookies used
+const cookieAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+        const token = req.cookies.accessToken;
+        if (!token) {
+            throw new HttpError('Authentication token is missing', 401)
+        }
+
+        const decoded = jwt.verify(token, config.jwt.secret);
+        req.user = decoded as jwt.JwtPayload;
+        next()
+    } catch (error) {
+        const authError = new HttpError('Unauthorized', 401)
+        next(authError)
+    }
+}
+
+export default cookieAuth;

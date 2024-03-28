@@ -7,13 +7,7 @@ export const setAccessToken = (accessToken: string) => localStorage.setItem('acc
 
 export const RefreshAccessToken = async () => {
     try {
-        const refreshToken = getRefreshToken();
-        const response = await axios.post('http://localhost:3001/authentication/token', { refreshToken })
-        console.log("response: ", response.data)
-        if (!response) {
-            throw new Error('Error refreshing token in interceptor')
-        }
-        return response.data;
+        await axios.post('https://localhost:3001/authentication/token', {}, { withCredentials: true })
     } catch (error) {
         const axiosError = error as AxiosError;
         console.error(`Error refreshing token ${axiosError.response?.status}`, axiosError.message)

@@ -66,9 +66,9 @@ class AuthService {
         }
     }
 
-    public refreshToken = async (refreshToken: string) => {
+    public refreshToken = async () => {
         try {
-            return await AuthenticationClient.refreshToken(refreshToken)
+            return await AuthenticationClient.refreshToken()
         } catch (error) {
             const axiosError = error as AxiosError
             if (axiosError.response?.status) {
