@@ -1,15 +1,24 @@
 export class RegistrationError extends Error {
-    constructor(message: string = 'Error registering') {
+    errorCode?: string;
+
+    constructor(message: string = 'Error registering', errorCode?: string) {
         super(message)
         this.name = 'AuthServiceError' //for logging purposes
+        this.errorCode = errorCode
     }
 }
 
 export class UserExistError extends RegistrationError {
-    constructor(message = 'User exists') {
-        super(message);
+    constructor(message = 'User exists', errorCode?: string) {
+        super(message, errorCode);
         this.name = "UserInputError"; // (e.g., missing or invalid fields)
+
     }
+}
+
+export interface ErrorResponse {
+    message: string;
+    errorCode?: string;
 }
 
 export const handleRegistrationErrors = (error: unknown, setError?: React.Dispatch<React.SetStateAction<string | undefined>>): void => {
@@ -26,9 +35,12 @@ export const handleRegistrationErrors = (error: unknown, setError?: React.Dispat
 }
 
 const getUserFriendlyRegistrationErrorMessage = (error: RegistrationError): string => {
-    if (error instanceof UserExistError) {
-        return "The user already exists. Please retry with a different userame";
-    } else {
-        return "An unexpected error occurred while trying to regiser. Please try again later.";
+    switch (error.errorCode) {
+        case 'UsernameExists':
+            return "The username is already taken. Please choose another one.";
+        case 'EmailExists':
+            return "An account with this email already exists. Please use a different email.";
+        default:
+            return error.message || "An unexpected error occurred during registration. Please try again later.";
     }
 };

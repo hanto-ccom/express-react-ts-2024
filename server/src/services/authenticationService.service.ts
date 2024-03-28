@@ -2,7 +2,10 @@ import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import config from '../config/config';
-import { HttpError } from '../middleware/errorHandler';
+import {
+    DetailedHttpError,
+    HttpError,
+} from '../middleware/errorHandler';
 import User from '../models/Users';
 
 interface DecodedToken extends JwtPayload {
@@ -16,7 +19,13 @@ class AuthenticationService {
 
             const existingUser = await User.findOne({ username });
             if (existingUser) {
-                throw new HttpError('User already exists', 400);
+                throw new DetailedHttpError('User already exists', 400, 'UsernameExists');
+            }
+
+            // Check if the email already exists
+            const existingUserByEmail = await User.findOne({ email });
+            if (existingUserByEmail) {
+                throw new DetailedHttpError('Email is already registered', 400, 'EmailExists');
             }
 
             let user = new User({ username, password, firstname, lastname, email });

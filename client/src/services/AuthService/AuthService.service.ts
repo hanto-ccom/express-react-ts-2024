@@ -12,6 +12,7 @@ import {
     UnauthorizedError,
 } from './AuthServiceErrors';
 import {
+    ErrorResponse,
     RegistrationError,
     UserExistError,
 } from './RegistrationErrors';
@@ -44,9 +45,16 @@ class AuthService {
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response?.status) {
+                const { message, errorCode } = axiosError.response.data as ErrorResponse
                 switch (axiosError.response.status) {
                     case 400:
-                        throw new UserExistError()
+                        if (errorCode === 'UserExists') {
+                            throw new UserExistError('UserExists', errorCode)
+                        } else if (errorCode === 'EmailExists') {
+                            throw new UserExistError('EmailExists', errorCode)
+                        } else {
+                            throw new RegistrationError(message);
+                        }
                     case 404:
                         throw new RegistrationError()
                     default:
