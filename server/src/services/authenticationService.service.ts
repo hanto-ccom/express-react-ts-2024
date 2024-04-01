@@ -65,13 +65,13 @@ class AuthenticationService {
     async logOutUser(token: string) {
         try {
             const user = await User.findOne({ refreshTokens: token });
-            if (!user) {
-                throw new HttpError("User's token not found", 404);
+            if (user) {
+                //remove user's refreshtoken
+                user.refreshTokens = [];
+                await user.save();
             }
-            //remove user's refreshtoken
-            user.refreshTokens = [];
-            await user.save();
-            return user;
+            //ok, regardless if user was found or not
+            return { message: 'Logged out successfully' }
 
         } catch (error) {
             throw error;

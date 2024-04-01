@@ -54,11 +54,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 export const logoutUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const token = req.cookies.refreshToken;
     try {
-        const user = await authenticationService.logOutUser(token)
-        // throw if no message from service
-        if (!user) {
-            throw new HttpError('Error logging out user', 404);
-        }
+        await authenticationService.logOutUser(token)
+
+        //no errors thrown here, we do not want to hint attackers in anyway, we simply invalidate the tokens even though the user wasn't found
 
         //clear cookies
         res.cookie('accessToken', '', { expires: new Date(0) })
@@ -71,6 +69,7 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
 }
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    //preliminary check, outside try-catch
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return next(new HttpError('No refresh token provided', 401)); // return here to exit out of the refreshtoken logic, ie. not to run the try
