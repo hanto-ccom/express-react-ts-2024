@@ -49,9 +49,11 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     }
   };
 
-  const logout = (): void => {
-    //TOOD: await AuthService.logout()
-    setUser(undefined); // Or set to null based on your initial state
+  const logout = async () => {
+    const logoutResponse = await AuthService.logoutUser();
+    if (logoutResponse) {
+      setUser(undefined);
+    }
   };
 
   const fetchUserData = async () => {
@@ -60,9 +62,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
       setUser(data); // Update user context
     } catch (error) {
       console.error("Fetch user data error:", error);
-      // Handle error (e.g., token expired or invalid)
       setUser(undefined);
-      // Consider triggering a refresh token flow here or logging the user out
     }
   };
 

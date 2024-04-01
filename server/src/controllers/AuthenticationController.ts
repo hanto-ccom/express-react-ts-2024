@@ -52,14 +52,28 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const logoutUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    //TODO: implement
+    const token = req.cookies.refreshToken;
+    try {
+        const user = await authenticationService.logOutUser(token)
+        // throw if no message from service
+        if (!user) {
+            throw new HttpError('Error logging out user', 404);
+        }
+
+        //clear cookies
+        res.cookie('accessToken', '', { expires: new Date(0) })
+        res.cookie('refreshToken', '', { expires: new Date(0) })
+
+        res.status(200).json({ message: 'Logged out successfully' })
+    } catch (error) {
+        next(error)
+    }
 }
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { refreshToken } = req.cookies;
-
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-        throw new HttpError('No refresh token provided', 401);
+        return next(new HttpError('No refresh token provided', 401)); // return here to exit out of the refreshtoken logic, ie. not to run the try
     }
     try {
         const { accessToken } = await authenticationService.refreshToken(refreshToken)

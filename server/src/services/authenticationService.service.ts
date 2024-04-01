@@ -41,10 +41,10 @@ class AuthenticationService {
         }
     }
 
-    async loginUser(username: string, password: string) {
+    async loginUser(username: string, pw: string) {
         try {
             const user = await User.findOne({ username: username });
-            if (!user || !(await bcrypt.compare(password, user.password))) {
+            if (!user || !(await bcrypt.compare(pw, user.password))) {
                 throw new HttpError('Invalid username or password', 401);
             }
 
@@ -53,9 +53,28 @@ class AuthenticationService {
             user.refreshTokens.push(refreshToken);
             await user.save();
 
-            return { user, accessToken, refreshToken }
+            let userObject = user.toObject();
+            const { refreshTokens, password, ...userInfo } = userObject; // remove refrestokens and password, we do not want to send them in our response
+
+            return { user: userInfo, accessToken, refreshToken } // only senmd userInfo from user object
         } catch (error) {
             throw error
+        }
+    }
+
+    async logOutUser(token: string) {
+        try {
+            const user = await User.findOne({ refreshTokens: token });
+            if (!user) {
+                throw new HttpError("User's token not found", 404);
+            }
+            //remove user's refreshtoken
+            user.refreshTokens = [];
+            await user.save();
+            return user;
+
+        } catch (error) {
+            throw error;
         }
     }
 

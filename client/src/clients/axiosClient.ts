@@ -34,8 +34,8 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
-                        // Check if it's a login request or if a refresh attempt has already been made
-                        if (error.config.url.includes('/login') || error.config._retry) {
+                        // Check if it's a login request / refresh request or if a refresh attempt has already been made
+                        if (error.config.url.includes('/login') || !error.config.url.includes('/authentication/token') || error.config._retry) {
                             // For login requests or already retried requests, don't attempt to refresh the token
                             return Promise.reject(error);
                         }
@@ -51,7 +51,7 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                                 return instance(error.config)
                             } catch (refreshError) {
                                 //handle failed refesh                                
-                                //window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
                                 return Promise.reject(refreshError);
                             }
                         }
