@@ -11,7 +11,7 @@ class AuthenticationClient {
     private axiosClient: AxiosInstance
 
     constructor() {
-        this.axiosClient = createAxiosClient({ baseURL: 'http://localhost:3001/authentication' })
+        this.axiosClient = createAxiosClient({ baseURL: 'https://localhost:3001/authentication' })
     }
 
     public registerUser = async (username: string, password: string, firstname: string, lastname: string, email: string) => {
@@ -56,11 +56,25 @@ class AuthenticationClient {
         }
     }
 
-    public refreshToken = async (refreshToken: string) => {
+    public logoutUser = async () => {
         try {
-            const response: AxiosResponse = await this.axiosClient.post('/token', {
-                refreshToken
-            })
+            const response: AxiosResponse = await this.axiosClient.post('/logout')
+            return response.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response) {
+                console.error(`HTTP error from AuthClient: ${axiosError.response.status}`, axiosError.message)
+            } else {
+                console.error('Netowkr or non-HTTP error in AuthClient', axiosError.message)
+            }
+
+            throw axiosError;
+        }
+    }
+
+    public refreshToken = async () => {
+        try {
+            const response: AxiosResponse = await this.axiosClient.post('/token', { withCredentials: true })
 
             return response.data;
         } catch (error) {

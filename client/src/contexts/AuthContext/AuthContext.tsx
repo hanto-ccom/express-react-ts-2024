@@ -19,7 +19,6 @@ interface UserContextType {
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  refreshToken: () => Promise<void>;
 }
 
 interface UserProviderProps {
@@ -41,71 +40,37 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   const [loading, setIsLoading] = useState<boolean>(true);
 
   const login = async (username: string, password: string) => {
-    //clear any old tokens
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
     const userResponse = await AuthService.loginUser(username, password);
     if (userResponse) {
-      console.log("userResponse: ", userResponse);
-      localStorage.setItem("accessToken", userResponse.accessToken);
-      localStorage.setItem(
-        "refreshToken",
-        userResponse.user.refreshTokens?.slice(-1)
-      );
       setUser({
-        ...userResponse.user,
+        ...userResponse,
         isLoggedIn: true,
       });
     }
   };
 
-  const logout = (): void => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setUser(undefined); // Or set to null based on your initial state
-  };
-
-  const refreshToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) {
-      logout();
-      return;
-      // throw new Error("No refresh token available");
-    }
-    try {
-      const accessToken = await AuthService.refreshToken(refreshToken);
-      localStorage.setItem("accessToken", accessToken);
-    } catch (error) {
-      logout();
-      throw error;
+  const logout = async () => {
+    const logoutResponse = await AuthService.logoutUser();
+    if (logoutResponse) {
+      setUser(undefined);
     }
   };
 
   const fetchUserData = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      //throw new Error("No accesstoken available");
-      return;
+    try {
+      const data = await UserService.fectchUser(); // Adjusted to rely on access token cookie
+      setUser(data); // Update user context
+    } catch (error) {
+      console.error("Fetch user data error:", error);
+      setUser(undefined);
     }
-
-    const data = await UserService.fectchUser(accessToken);
-
-    setUser(data);
   };
 
   useEffect(() => {
-    console.log("Use Effect on refresh");
-    // On app load, attempt to refresh token if refresh token exists
-    // Set loading to false afterwards to render the app
     const initAuth = async () => {
       try {
-        await refreshToken(); // Attempt to refresh the token on app start
-        // If refreshToken is successful, the user is considered logged in
         await fetchUserData();
       } catch (error) {
-        setUser(undefined);
-        // Handle failure, which might include doing nothing if you simply show the login screen
         console.error("Error init auth: ", error);
       } finally {
         setIsLoading(false);
@@ -115,9 +80,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, login, logout, refreshToken }}
-    >
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

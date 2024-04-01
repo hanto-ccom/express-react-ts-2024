@@ -17,6 +17,8 @@ const WeatherView = () => {
   const [error, setError] = useState<string>();
   const { user, logout } = useAuth();
 
+  console.log("user in weather view: ", user);
+
   const onFormSubmit = async (city: string) => {
     setIsLoading(true);
     setError(undefined);

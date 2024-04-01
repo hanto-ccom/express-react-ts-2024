@@ -9,9 +9,10 @@ import {
 } from './UserServiceErrors';
 
 class UserService {
-    public fectchUser = async (accessToken: string) => {
+    public fectchUser = async () => {
         try {
-            return await UserClient.getUserWithToken(accessToken)
+            const response = await UserClient.getUserWithToken()
+            return response
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response?.status) {

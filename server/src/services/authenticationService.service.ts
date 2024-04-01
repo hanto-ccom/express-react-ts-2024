@@ -41,10 +41,10 @@ class AuthenticationService {
         }
     }
 
-    async loginUser(username: string, password: string) {
+    async loginUser(username: string, pw: string) {
         try {
             const user = await User.findOne({ username: username });
-            if (!user || !(await bcrypt.compare(password, user.password))) {
+            if (!user || !(await bcrypt.compare(pw, user.password))) {
                 throw new HttpError('Invalid username or password', 401);
             }
 
@@ -53,9 +53,28 @@ class AuthenticationService {
             user.refreshTokens.push(refreshToken);
             await user.save();
 
-            return { user, accessToken }
+            let userObject = user.toObject();
+            const { refreshTokens, password, ...userInfo } = userObject; // remove refrestokens and password, we do not want to send them in our response
+
+            return { user: userInfo, accessToken, refreshToken } // only senmd userInfo from user object
         } catch (error) {
             throw error
+        }
+    }
+
+    async logOutUser(token: string) {
+        try {
+            const user = await User.findOne({ refreshTokens: token });
+            if (user) {
+                //remove user's refreshtoken
+                user.refreshTokens = [];
+                await user.save();
+            }
+            //ok, regardless if user was found or not
+            return { message: 'Logged out successfully' }
+
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -83,7 +102,7 @@ class AuthenticationService {
             }
 
             const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' })
-            return accessToken;
+            return { accessToken };
         } catch (error) {
             throw error;
         }

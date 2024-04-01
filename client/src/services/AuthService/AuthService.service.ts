@@ -39,6 +39,26 @@ class AuthService {
         }
     }
 
+    public logoutUser = async () => {
+        try {
+            return await AuthenticationClient.logoutUser();
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response?.status) {
+                switch (axiosError.response.status) {
+                    case 401:
+                        throw new UnauthorizedError('Unauthorized');
+                    case 404:
+                        throw new NotFoundError('User not found')
+                    default:
+                        throw new AuthServiceError(`Error logging out user`)
+                }
+            } else {
+                throw new NetworkOrUnknownError();
+            }
+        }
+    }
+
     public registerUser = async (username: string, password: string, firstname: string, lastname: string, email: string) => {
         try {
             return await AuthenticationClient.registerUser(username, password, firstname, lastname, email)
@@ -66,9 +86,9 @@ class AuthService {
         }
     }
 
-    public refreshToken = async (refreshToken: string) => {
+    public refreshToken = async () => {
         try {
-            return await AuthenticationClient.refreshToken(refreshToken)
+            return await AuthenticationClient.refreshToken()
         } catch (error) {
             const axiosError = error as AxiosError
             if (axiosError.response?.status) {
