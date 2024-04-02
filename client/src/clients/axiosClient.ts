@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
+import { LogoutUser } from '../utilities/LogoutUser';
 import { RefreshAccessToken } from '../utilities/RefreshToken';
 
 interface CreateAxiosClientOptions {
@@ -23,10 +24,6 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
         withCredentials: true
     });
 
-
-
-
-
     // - Response Interceptor
     instance.interceptors.response.use(
         (response) => response, //2xx - all good
@@ -34,29 +31,26 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
-                        // Check if it's a login request / refresh request or if a refresh attempt has already been made
-                        if (error.config.url.includes('/login') || !error.config.url.includes('/authentication/token') || error.config._retry) {
-                            // For login requests or already retried requests, don't attempt to refresh the token
+                        //refresh request or if a refresh attempt has already been made
+                        if (error.config.url.includes('/authentication/token') || error.config._retry) {
+                            // For already retried requests, don't attempt to refresh the token
+                            LogoutUser();
                             return Promise.reject(error);
                         }
+                        document.cookie
+                        // Mark this request as having been retried
+                        error.config._retry = true;
 
-                        // Handle token refresh, user redirection, or emit an event here             
-                        if (!error.config._retry) {
-                            // Mark this request as having been retried
-                            error.config._retry = true;
-
-                            try {
-                                console.log("trying to get refreshtoken via axiosinterceptor for 401")
-                                await RefreshAccessToken();
-                                return instance(error.config)
-                            } catch (refreshError) {
-                                //handle failed refesh                                
-                                window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
-                                return Promise.reject(refreshError);
-                            }
+                        try {
+                            console.log("trying to get refreshtoken via axiosinterceptor for 401")
+                            await RefreshAccessToken();
+                            return instance(error.config)
+                        } catch (refreshError) {
+                            //handle failed refesh                                
+                            //window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                            return Promise.reject(refreshError);
                         }
 
-                        break;
                     case 404:
                         console.error("Not Found - 404", error);
                         // Handle 404 specific actions

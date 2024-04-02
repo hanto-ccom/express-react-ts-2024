@@ -48,8 +48,8 @@ class AuthenticationService {
                 throw new HttpError('Invalid username or password', 401);
             }
 
-            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' });
-            const refreshToken = jwt.sign({ _id: user._id }, config.jwt.refreshSecret, { expiresIn: '7d' })
+            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '20s' });
+            const refreshToken = jwt.sign({ _id: user._id }, config.jwt.refreshSecret, { expiresIn: '1m' })
             user.refreshTokens.push(refreshToken);
             await user.save();
 
@@ -101,7 +101,7 @@ class AuthenticationService {
                 throw new HttpError('User ID missmatch', 403);
             }
 
-            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' })
+            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '20s' })
             return { accessToken };
         } catch (error) {
             throw error;

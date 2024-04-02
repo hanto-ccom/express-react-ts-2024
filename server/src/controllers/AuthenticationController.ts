@@ -61,8 +61,8 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
         //no errors thrown here, we do not want to hint attackers in anyway, we simply invalidate the tokens even though the user wasn't found
 
         //clear cookies
-        res.cookie('accessToken', '', { expires: new Date(0), signed: true })
-        res.cookie('refreshToken', '', { expires: new Date(0), signed: true })
+        res.cookie('accessToken', '', { expires: new Date(0), httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('refreshToken', '', { expires: new Date(0), httpOnly: true, secure: true, sameSite: 'strict' });
 
         res.status(200).json({ message: 'Logged out successfully' })
     } catch (error) {
