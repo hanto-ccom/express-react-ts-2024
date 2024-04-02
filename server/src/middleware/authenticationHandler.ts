@@ -18,26 +18,26 @@ export interface AuthRequest extends Request {
 }
 
 //used when localstorage was used
-const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
-    try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        if (!token) {
-            throw new HttpError('Token not found', 401)
-        }
+// const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
+//     try {
+//         const token = req.header('Authorization')?.replace('Bearer ', '');
+//         if (!token) {
+//             throw new HttpError('Token not found', 401)
+//         }
 
-        const decoded = jwt.verify(token, config.jwt.secret);
-        req.user = decoded as jwt.JwtPayload;
-        next();
-    } catch (error) {
-        const authError = new HttpError('Authentication failed', 401)
-        next(authError)
-    }
-};
+//         const decoded = jwt.verify(token, config.jwt.secret);
+//         req.user = decoded as jwt.JwtPayload;
+//         next();
+//     } catch (error) {
+//         const authError = new HttpError('Authentication failed', 401)
+//         next(authError)
+//     }
+// };
 
 //when cookies used
 const cookieAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-        const token = req.cookies.accessToken;
+        const token = req.signedCookies.accessToken;
         if (!token) {
             throw new HttpError('Authentication token is missing', 401)
         }

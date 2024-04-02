@@ -34,15 +34,17 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: true, // send only over HTTPS
-            sameSite: 'none', // strict or lax depending on your needs
-            maxAge: 30 * 60 * 1000 // expires in 30 minutes
+            sameSite: 'strict', // strict or lax depending on your needs
+            maxAge: 30 * 60 * 1000, // expires in 30 minutes
+            signed: true
         });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // expires in 7 days
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // expires in 7 days
+            signed: true
         });
 
         res.status(200).json(user)
@@ -52,15 +54,15 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const logoutUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const token = req.cookies.refreshToken;
+    const token = req.signedCookies.refreshToken;
     try {
         await authenticationService.logOutUser(token)
 
         //no errors thrown here, we do not want to hint attackers in anyway, we simply invalidate the tokens even though the user wasn't found
 
         //clear cookies
-        res.cookie('accessToken', '', { expires: new Date(0) })
-        res.cookie('refreshToken', '', { expires: new Date(0) })
+        res.cookie('accessToken', '', { expires: new Date(0), signed: true })
+        res.cookie('refreshToken', '', { expires: new Date(0), signed: true })
 
         res.status(200).json({ message: 'Logged out successfully' })
     } catch (error) {
@@ -70,13 +72,13 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     //preliminary check, outside try-catch
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.signedCookies.refreshToken;
     if (!refreshToken) {
         return next(new HttpError('No refresh token provided', 401)); // return here to exit out of the refreshtoken logic, ie. not to run the try
     }
     try {
         const { accessToken } = await authenticationService.refreshToken(refreshToken)
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000 });
+        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000, signed: true });
         res.send('Token refreshed');
 
     } catch (error) {

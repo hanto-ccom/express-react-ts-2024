@@ -15,6 +15,9 @@ const config = {
     ssl: {
         key: fs.readFileSync('config/ssl/server.key'),
         cert: fs.readFileSync('config/ssl/server.cert')
+    },
+    cookies: {
+        signed_cookie_secret: process.env.SIGNED_COOKIE_SECRET
     }
 }
 
