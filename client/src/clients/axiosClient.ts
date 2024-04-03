@@ -48,6 +48,7 @@ const createAxiosClient = ({ baseURL = "", defaultParams = {}, authToken = "", a
                         } catch (refreshError) {
                             //handle failed refesh                                
                             //window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+                            await LogoutUser();
                             return Promise.reject(refreshError);
                         }
 

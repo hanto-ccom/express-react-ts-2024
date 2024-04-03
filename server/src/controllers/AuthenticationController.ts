@@ -78,7 +78,12 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
     }
     try {
         const refreshedTokens = await authenticationService.refreshToken(refreshToken)
-        res.cookie('accessToken', refreshedTokens?.newAccessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000, signed: true });
+
+        if (!refreshedTokens) {
+            throw new HttpError('Failed to refresh tokens', 401);
+        }
+        res.cookie('accessToken', refreshedTokens?.newAccessToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 30 * 60 * 1000, signed: true }); //30minutes
+        res.cookie('refreshToken', refreshedTokens?.newRefreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000, signed: true }) //7days
         res.send('Token refreshed');
 
     } catch (error) {
