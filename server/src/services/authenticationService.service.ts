@@ -1,22 +1,39 @@
 import bcrypt from 'bcryptjs';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
+import { Types } from 'mongoose';
 
-import config from '../config/config';
 import {
     DetailedHttpError,
     HttpError,
 } from '../middleware/errorHandler';
 import User from '../models/Users';
+import tokenServiceInstance, { TokenService } from './token.service';
 
 interface DecodedToken extends JwtPayload {
     _id: string;
 }
 
+export interface LoginResponse {
+    user: {
+        username: string;
+        firstname: string;
+        lastname: string;
+        email: string;
+        _id: Types.ObjectId;
+    };
+    accessToken: string;
+    refreshToken: string;
+}
 
 class AuthenticationService {
+    private tokenService: TokenService;
+
+    constructor(tokenService: TokenService) {
+        this.tokenService = tokenService;
+    }
+
     async registerUser(username: string, password: string, firstname: string, lastname: string, email: string) {
         try {
-
             const existingUser = await User.findOne({ username });
             if (existingUser) {
                 throw new DetailedHttpError('User already exists', 400, 'UsernameExists');
@@ -30,33 +47,29 @@ class AuthenticationService {
 
             let user = new User({ username, password, firstname, lastname, email });
             user = await user.save();
-
-            //create jwt token for user
-            const token = jwt.sign({ _id: user._id }, config.jwt.secret);
-            //respond with user info and token
-            return { user, token }
-
+            const token = this.tokenService.generateAccessToken(user.id)
+            return { user: { username, firstname, lastname, email }, token }
         } catch (error) {
-            throw error
+            console.error('Registration error:', error);
+            throw error;
         }
     }
 
-    async loginUser(username: string, pw: string) {
+    async loginUser(username: string, pw: string): Promise<LoginResponse> {
         try {
-            const user = await User.findOne({ username: username });
+            const user = await User.findOne({ username });
             if (!user || !(await bcrypt.compare(pw, user.password))) {
                 throw new HttpError('Invalid username or password', 401);
             }
 
-            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' });
-            const refreshToken = jwt.sign({ _id: user._id }, config.jwt.refreshSecret, { expiresIn: '7d' })
+            const accessToken = this.tokenService.generateAccessToken(user.id);
+            const refreshToken = this.tokenService.generateRefreshToken(user.id);
             user.refreshTokens.push(refreshToken);
             await user.save();
 
-            let userObject = user.toObject();
-            const { refreshTokens, password, ...userInfo } = userObject; // remove refrestokens and password, we do not want to send them in our response
 
-            return { user: userInfo, accessToken, refreshToken } // only senmd userInfo from user object
+            const { refreshTokens, password, ...userInfo } = user.toObject();
+            return { user: userInfo, accessToken, refreshToken };
         } catch (error) {
             throw error
         }
@@ -64,11 +77,9 @@ class AuthenticationService {
 
     async logOutUser(token: string) {
         try {
-            const user = await User.findOne({ refreshTokens: token });
-            if (user) {
-                //remove user's refreshtoken
-                user.refreshTokens = [];
-                await user.save();
+            const user = await User.findOneAndUpdate({ refreshTokens: token }, { $pull: { refreshTokens: token } });
+            if (!user) {
+                console.warn('Logout called with invalid token')
             }
             //ok, regardless if user was found or not
             return { message: 'Logged out successfully' }
@@ -80,34 +91,18 @@ class AuthenticationService {
 
     async refreshToken(oldRefeshToken: string) {
         try {
-            const user = await User.findOne({ refreshTokens: oldRefeshToken });
+            const user = await User.findOne({ refreshTokens: oldRefeshToken })
             if (!user) {
                 throw new HttpError('No matching user for provided token', 403);
             }
 
-            // Correctly handling the jwt.verify call            
-            const decodedToken = await new Promise((resolve, reject) => {
-                jwt.verify(oldRefeshToken, config.jwt.refreshSecret, (err: any, decoded: any) => {
-                    if (err) {
-                        reject(new HttpError('Token verification failed', 403))
-                    }
-                    resolve(decoded)
-                })
-            })
+            return await this.tokenService.rotateRefreshToken(oldRefeshToken)
 
-            const decoded = decodedToken as DecodedToken;
-
-            if (user._id.toString() !== decoded._id) {
-                throw new HttpError('User ID missmatch', 403);
-            }
-
-            const accessToken = jwt.sign({ _id: user._id }, config.jwt.secret, { expiresIn: '30m' })
-            return { accessToken };
         } catch (error) {
-            throw error;
+
         }
     }
 
 }
 
-export default new AuthenticationService();
+export default new AuthenticationService(tokenServiceInstance);

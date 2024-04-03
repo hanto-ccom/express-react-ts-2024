@@ -61,8 +61,8 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
         //no errors thrown here, we do not want to hint attackers in anyway, we simply invalidate the tokens even though the user wasn't found
 
         //clear cookies
-        res.cookie('accessToken', '', { expires: new Date(0), signed: true })
-        res.cookie('refreshToken', '', { expires: new Date(0), signed: true })
+        res.cookie('accessToken', '', { expires: new Date(0), httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('refreshToken', '', { expires: new Date(0), httpOnly: true, secure: true, sameSite: 'strict' });
 
         res.status(200).json({ message: 'Logged out successfully' })
     } catch (error) {
@@ -77,8 +77,13 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         return next(new HttpError('No refresh token provided', 401)); // return here to exit out of the refreshtoken logic, ie. not to run the try
     }
     try {
-        const { accessToken } = await authenticationService.refreshToken(refreshToken)
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000, signed: true });
+        const refreshedTokens = await authenticationService.refreshToken(refreshToken)
+
+        if (!refreshedTokens) {
+            throw new HttpError('Failed to refresh tokens', 401);
+        }
+        res.cookie('accessToken', refreshedTokens?.newAccessToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 30 * 60 * 1000, signed: true }); //30minutes
+        res.cookie('refreshToken', refreshedTokens?.newRefreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000, signed: true }) //7days
         res.send('Token refreshed');
 
     } catch (error) {
