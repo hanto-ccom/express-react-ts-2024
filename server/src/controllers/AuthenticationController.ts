@@ -77,8 +77,8 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         return next(new HttpError('No refresh token provided', 401)); // return here to exit out of the refreshtoken logic, ie. not to run the try
     }
     try {
-        const { accessToken } = await authenticationService.refreshToken(refreshToken)
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000, signed: true });
+        const refreshedTokens = await authenticationService.refreshToken(refreshToken)
+        res.cookie('accessToken', refreshedTokens?.newAccessToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 30 * 60 * 1000, signed: true });
         res.send('Token refreshed');
 
     } catch (error) {
