@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../../components/atoms/Button/Button";
-import Input from "../../components/atoms/Input/Input";
+import InputWithLabel from "../../components/atoms/InputWithLabel/InputWithLabel";
 import Error from "../../components/error/Error";
 import AuthServiceService from "../../services/AuthService/AuthService.service";
 import { handleRegistrationErrors } from "../../services/AuthService/RegistrationErrors";
@@ -51,10 +51,12 @@ const RegisterView = () => {
         {/* <label htmlFor="username" style={{ color: "gray" }}>
           Username
         </label> */}
-        <Input
+        <InputWithLabel
+          label={"Username"}
+          id="username"
           name="username"
           type="text"
-          placeholder="username"
+          placeholder=""
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
           required
@@ -62,45 +64,55 @@ const RegisterView = () => {
         {/* <label htmlFor="password" style={{ color: "gray" }}>
           Password
         </label> */}
-        <Input
+        <InputWithLabel
+          label={"Password"}
+          id={"password"}
           name="password"
           type="password"
           autoComplete="off"
-          placeholder="password"
+          placeholder=""
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
           required
         />
-        <Input
+        <InputWithLabel
+          label={"Verify password"}
+          id={"verifypassword"}
           name="verifyPassword"
           type="password"
-          placeholder="verify password"
+          placeholder=""
           autoComplete="off"
           value={verifyPassword}
           onChange={(e) => setVerifyPassword(e.currentTarget.value)}
           required
         />
         <hr />
-        <Input
+        <InputWithLabel
+          label={"Firstname"}
+          id={"firstname"}
           name="firstName"
           type="text"
-          placeholder="Firstname"
+          placeholder=""
           value={firstName}
           onChange={(e) => setFirstName(e.currentTarget.value)}
           required
         />
-        <Input
+        <InputWithLabel
+          label={"Lastname"}
+          id={"lastname"}
           name="lastName"
           type="text"
-          placeholder="Lastname"
+          placeholder=""
           value={lastName}
           onChange={(e) => setLastName(e.currentTarget.value)}
           required
         />
-        <Input
+        <InputWithLabel
+          label={"E-mail"}
+          id={"email"}
           name="email"
           type="email"
-          placeholder="you@domain.com"
+          placeholder=""
           value={email}
           onChange={(e) => setEmail(e.currentTarget.value)}
           required
